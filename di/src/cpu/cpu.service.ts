@@ -5,6 +5,7 @@ import { PowerService } from '../power/power.service'; // Uvozimo PowerService i
 
 @Injectable()
 export class CpuService {
+    
     constructor(private powerService: PowerService) {} // Injektuje PowerService u CpuService
 
     compute(a: number, b: number): number {

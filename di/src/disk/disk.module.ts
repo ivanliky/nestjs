@@ -7,6 +7,7 @@ import { PowerModule } from 'src/power/power.module';
 
 @Module({
   imports: [PowerModule], // Uvozi PowerModule kako bi DiskService mogao da koristi njegove servise
-  providers: [DiskService] // Registruje DiskService kao provajder unutar DiskModule
+  providers: [DiskService], // Registruje DiskService kao provajder unutar DiskModule
+  exports: [DiskService] // Omogućava izvoz DiskService za korišćenje u drugim modulima
 })
 export class DiskModule {}

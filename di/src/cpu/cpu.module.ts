@@ -8,6 +8,7 @@ import { PowerModule } from '../power/power.module'; // Modul za PowerService
 
 @Module({
   imports: [PowerModule], // Uvozi PowerModule kako bi mogao da koristi PowerService
-  providers: [CpuService] // Registruje CpuService kao provajder unutar CpuModule
+  providers: [CpuService], // Registruje CpuService kao provajder unutar CpuModule
+  exports: [CpuService] // Omogućava izvoz CpuService za korišćenje u drugim modulima
 })
 export class CpuModule {}
