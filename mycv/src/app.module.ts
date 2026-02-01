@@ -10,10 +10,11 @@
 
 import { Module } from '@nestjs/common'; // Dekorator za definisanje NestJS modula
 import { TypeOrmModule } from '@nestjs/typeorm'; // Integracija TypeORM-a sa NestJS
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from './app.controller'; // Glavni kontroler aplikacije
+import { AppService } from './app.service'; // Glavni servis aplikacije
 import { UsersModule } from './users/users.module'; // Feature modul za rad sa korisnicima
 import { ReportsModule } from './reports/reports.module'; // Feature modul za izveštaje
+import { User } from './users/user.entity'; // Importovanje User entiteta
 
 @Module({
   imports: [
@@ -27,18 +28,19 @@ import { ReportsModule } from './reports/reports.module'; // Feature modul za iz
     // - `synchronize: true` -> automatski sinhronizuje shemu baze sa entitetima (dodaje/menja tabele).
     //     Ovo je zgodno tokom razvoja, ali NE preporučuje se u produkciji jer može dovesti do
     //     neželjenih promena ili gubitka podataka.
-    TypeOrmModule.forRoot({ 
-      type: 'sqlite',
-      database: 'db.sqlite',
-      entities: [],
+    
+    TypeOrmModule.forRoot({  // Globalna konfiguracija TypeORM-a
+      type: 'sqlite', // Tip baze podataka
+      database: 'db.sqlite', 
+      entities: [User], // Registracija User entiteta
       synchronize: true,
       // Savet: za početak možete dodati `autoLoadEntities: true` ovde da olakšate razvoj.
       // autoLoadEntities: true,
     }),
 
     // Feature moduli: organizuju logiku po domenima (korisnici, izveštaji itd.).
-    UsersModule,
-    ReportsModule
+    UsersModule, // Modul za rad sa korisnicima
+    ReportsModule // Modul za rad sa izveštajima
   ], 
 
   // Kontroleri su odgovorni za rukovanje HTTP zahtevima i vraćanje odgovora.
