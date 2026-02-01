@@ -23,7 +23,7 @@ import { ReportsModule } from './reports/reports.module'; // Feature modul za iz
     // - `database: 'db.sqlite'` -> ime fajla koji sadrži bazu.
     // - `entities: []` -> mesto gde treba da navedete entity klase (tabele). Možete ovde importovati
     //     svoje entitete ili koristiti `autoLoadEntities: true` da se entiteti automatski učitaju
-    //     iz modula koji pozivaju `TypeOrmModule.forFeature()`.
+    //     iz modula koji pozivaju `TypeOrmModule.forFeature()`obris.
     // - `synchronize: true` -> automatski sinhronizuje shemu baze sa entitetima (dodaje/menja tabele).
     //     Ovo je zgodno tokom razvoja, ali NE preporučuje se u produkciji jer može dovesti do
     //     neželjenih promena ili gubitka podataka.
