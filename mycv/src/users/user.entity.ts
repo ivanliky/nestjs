@@ -6,6 +6,7 @@ export class User {
     id: number;
     @Column() // Obična kolona u tabeli
     email: string;
+
     @Column()
     password: string;
 
