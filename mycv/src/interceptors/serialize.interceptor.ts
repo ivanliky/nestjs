@@ -1,12 +1,20 @@
 import {
     NestInterceptor,
     ExecutionContext,
-    CallHandler
+    CallHandler,
+    UseInterceptors
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';   
-import { plainToClass } from 'class-transformer';
-import { UserDto } from 'src/users/dtos/user.dto';
+import { plainToInstance } from 'class-transformer';
+
+interface ClassConstructor {
+    new (...args: any[]): {};
+}
+
+export function Serialize(dto: ClassConstructor) {   
+    return UseInterceptors(new SerializeInterceptor(dto)); // Vraća funkciju koja koristi UseInterceptors sa instancom SerializeInterceptor-a
+}
 
 export class SerializeInterceptor implements NestInterceptor {
     constructor(private dto: any) {} // Konstruktor prima DTO klasu koja se koristi za serijalizaciju
@@ -16,8 +24,8 @@ export class SerializeInterceptor implements NestInterceptor {
         return next.handle().pipe(
             map((data: any) => {
   
-                // Nakon što handler vrati podatke, koristi plainToClass da ih transformiše u instancu DTO klase
-                return plainToClass(UserDto, data, {
+                 // Nakon što handler vrati podatke, koristi se plainToInstance da se ti podaci transformišu u instance DTO klase
+                return plainToInstance(this.dto, data, {
                     excludeExtraneousValues: true // Isključuje polja koja nisu označena sa @Expose u DTO klasi
                 }); 
              
