@@ -31,6 +31,7 @@ export class AuthService {
     }
 
     async signin(email: string, password: string){
+        
         const [user] = await this.usersService.find(email); // Pronalazak korisnika po emailu
 
         if(!user) {

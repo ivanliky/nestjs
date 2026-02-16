@@ -19,6 +19,9 @@ export class UsersService {
     }
 
     findOne(id: number) {
+        if (!id) {
+            return null; // Ako ID nije prosleđen, vraća null
+        }
         return this.repo.findOneBy({ id }); // Pronalazi jednog korisnika po ID-u
     }
 
