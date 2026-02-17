@@ -1,15 +1,16 @@
 import { Test } from "@nestjs/testing";
 import { AuthService } from "./auth.service"; 
 import { UsersService } from "./users.service";
+import { User } from "./user.entity";
 
-// Ovaj test provjerava da se može kreirati instanca AuthService. To je osnovni test koji osigurava da se AuthService može instancirati bez problema, što je ključno za daljnje testiranje funkcionalnosti unutar AuthService.
+// Ovaj test proverava da se može kreirati instanca AuthService. To je osnovni test koji osigurava da se AuthService može instancirati bez problema, što je ključno za daljnje testiranje funkcionalnosti unutar AuthService.
 it('can create an instance of auth service', async () => {
 
     // Kreira se fake user service koji će se koristiti u testu, jer AuthService zavisi od UserService. Ovaj fake service implementira samo metodu 'find' koja vraća praznu listu korisnika, što je dovoljno za potrebe ovog testa.
-  const fakeUserService = {
+  const fakeUserService: Partial<UsersService> = {
     find: () => Promise.resolve([]),
     create: (email: string, password: string) => 
-        Promise.resolve({ id: 1, email ,password })
+        Promise.resolve({ id: 1, email ,password } as User)
   };
 
 
