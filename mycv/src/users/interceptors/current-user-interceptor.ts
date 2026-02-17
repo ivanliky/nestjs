@@ -10,6 +10,7 @@ import { UsersService } from '../users.service';
 @Injectable() // Oznaka da je ovo klasa koja se može injektovati kao provider u NestJS-u
 export class CurrentUserInterceptor implements NestInterceptor {
 
+    // Injektuje UsersService kako bi mogao da pristupi metodama za rad sa korisnicima
     constructor(private usersService: UsersService) {}
 
     async intercept(context: ExecutionContext, handler: CallHandler) {

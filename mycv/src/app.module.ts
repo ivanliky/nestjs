@@ -18,6 +18,8 @@ import { User } from './users/user.entity'; // Importovanje User entiteta
 import { Report } from './reports/report.entity'; // Importovanje Report entiteta
 
 @Module({
+  // `imports` niz definiše module koje ovaj modul koristi. Ovi moduli mogu biti globalni (kao što je
+  // TypeOrmModule.forRoot()) ili feature moduli (kao što su UsersModule i ReportsModule).
   imports: [
     // TypeOrmModule.forRoot() registruje globalnu konekciju ka bazi podataka.
     // Ovde prosleđujemo osnovne opcije za TypeORM.
@@ -34,7 +36,7 @@ import { Report } from './reports/report.entity'; // Importovanje Report entitet
       type: 'sqlite', // Tip baze podataka
       database: 'db.sqlite', 
       entities: [User,Report], // Registracija entiteta (tabela) u bazi podataka
-      synchronize: true,
+      synchronize: true, // Automatska sinhronizacija sheme baze sa entitetima (pogodno za razvoj)
       // Savet: za početak možete dodati `autoLoadEntities: true` ovde da olakšate razvoj.
       // autoLoadEntities: true,
     }),

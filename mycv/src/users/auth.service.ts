@@ -7,10 +7,12 @@ import e from 'express';
 const scrypt = promisify(_script);
 
 @Injectable()
+// Ova klasa se koristi za autentifikaciju korisnika, uključujući registraciju (signup) i prijavu (signin).
 export class AuthService {
 
-    constructor(private usersService: UsersService) {}
+    constructor(private usersService: UsersService) {} // Injektuje UsersService kako bi mogao da pristupi metodama za rad sa korisnicima
 
+    // Metod za registraciju novog korisnika
     async signup(email: string, password: string) {
 
         const users = await this.usersService.find(email); // Provera da li korisnik sa datim emailom već postoji
@@ -30,6 +32,7 @@ export class AuthService {
         return user;
     }
 
+    // Metod za prijavu korisnika
     async signin(email: string, password: string){
         
         const [user] = await this.usersService.find(email); // Pronalazak korisnika po emailu

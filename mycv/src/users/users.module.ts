@@ -18,8 +18,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core'; // Importovanje APP_INTERCEPTOR 
     UsersService, 
     AuthService, 
    { 
-      provide: APP_INTERCEPTOR,
-      useClass: CurrentUserInterceptor 
+      provide: APP_INTERCEPTOR, // Registracija CurrentUserInterceptor-a kao globalnog interceptor-a
+      useClass: CurrentUserInterceptor // Svi odgovori će imati trenutno prijavljenog korisnika dostupnog putem @CurrentUser dekoratora
   }
   ] // Registracija servisa za korisnike
 })

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm'; // Dodato za injektovanje re
 import { User } from './user.entity'; // Importovanje User entiteta
 
 @Injectable()
-
+// Servis koji sadrži logiku za upravljanje korisnicima
 export class UsersService {
     // Konstruktor: injektuje TypeORM repozitorijum za `User` entitet.
     // @InjectRepository(User) — Nest/TypeORM dekorator koji obezbeđuje instancu `Repository<User>` registrovanu za entitet `User`.
