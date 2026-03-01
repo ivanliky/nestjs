@@ -1,28 +1,68 @@
 import { Test } from "@nestjs/testing";
-import { AuthService } from "./auth.service"; 
+import { AuthService } from "./auth.service";
 import { UsersService } from "./users.service";
 import { User } from "./user.entity";
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
-// Ovaj test proverava da se može kreirati instanca AuthService. To je osnovni test koji osigurava da se AuthService može instancirati bez problema, što je ključno za daljnje testiranje funkcionalnosti unutar AuthService.
-it('can create an instance of auth service', async () => {
+describe('AuthService', () => {
+  let service: AuthService; // Deklaracija promenljive za AuthService
+  let fakeUsersService: Partial<UsersService>; // Deklaracija promenljive za lažnu implementaciju UsersService, koristi se Partial da bi se omogućilo definisanje samo nekih metoda
 
-    // Kreira se fake user service koji će se koristiti u testu, jer AuthService zavisi od UserService. Ovaj fake service implementira samo metodu 'find' koja vraća praznu listu korisnika, što je dovoljno za potrebe ovog testa.
-  const fakeUserService: Partial<UsersService> = {
-    find: () => Promise.resolve([]),
-    create: (email: string, password: string) => 
-        Promise.resolve({ id: 1, email ,password } as User)
-  };
+  beforeEach(async () => {
+    fakeUsersService = {
+      find: () => Promise.resolve([]),
+      create: (email: string, password: string) => // Lažna implementacija metode create koja vraća korisnika sa datim emailom i lozinkom
+        Promise.resolve({ id: 1, email, password } as User), // Kreira i vraća korisnika sa id-jem 1, datim emailom i lozinkom
+    };
 
+    const module = await Test.createTestingModule({ // Kreiranje testnog modula sa AuthService i lažnom implementacijom UsersService
+      providers: [
+        AuthService,
+        { provide: UsersService, useValue: fakeUsersService }, // Injektovanje lažne implementacije UsersService u testni modul
+      ],
+    }).compile();
 
-  // Kreira se testing module koji uključuje AuthService i koristi fakeUserService umjesto stvarnog UserService. Ovo omogućava testiranje AuthService bez potrebe za stvarnim implementacijama UserService.
-  const module = await Test.createTestingModule({
-    providers: [
-        AuthService, 
-        { provide: UsersService, useValue: fakeUserService }],
-  }).compile();
+    service = module.get(AuthService); // Dobavljanje instance AuthService iz testnog modula kako bi se mogla koristiti u testovima
+  });
 
-  const service = module.get(AuthService); // Dobavlja se instanca AuthService iz testnog modula. Ovo je instanca koja će se testirati.
-  expect(service).toBeDefined(); // Provjerava se da je AuthService definisan, što znači da je uspješno kreiran i spreman za korištenje.
+  it('can create an instance of auth service', () => { // Test koji proverava da li se AuthService može instancirati
+    expect(service).toBeDefined();
+  });
+
+  it('creates a new user with a salted and hashed password', async () => { // Test koji proverava da li se prilikom kreiranja novog korisnika lozinka pravilno soli i hash-uje
+    const user = await service.signup('test@example.com', 'password');
+
+    expect(user.password).not.toEqual('password');
+
+    const [salt, hash] = user.password.split('.');
+    expect(salt).toBeDefined();
+    expect(hash).toBeDefined();
+  });
+
+  it('throws an error if user signs up with email that is in use', async () => { // Test koji proverava da li se baca greška kada se pokuša registracija sa emailom koji je već u upotrebi
+    fakeUsersService.find = () =>
+      Promise.resolve([{ id: 1, email: 'test@example.com', password: '1' } as User]);
+
+    await expect(
+      service.signup('test@example.com', 'password')
+    ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
+  it('throws if signin is called with an unused email', async () => { // Test koji proverava da li se baca greška kada se pokuša prijava sa emailom koji nije registrovan
+    await expect(
+      service.signin('test@example.com', 'password')
+    ).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('throws if an invalid password is provided', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([
+        { email: 'asdf@asdf.com', password: 'laskdjf' } as User,
+      ]);
+    await expect(
+      service.signin('laskdjf@alskdfj.com', 'passowrd'),
+    ).rejects.toThrow(BadRequestException);
+  });
 
 });
 
